@@ -1,4 +1,4 @@
 streamlit
 matplotlib
 numpy
-fastf1==3.3.3
+fastf1==3.3.2
