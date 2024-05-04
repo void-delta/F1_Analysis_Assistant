@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from matplotlib.collections import LineCollection
 import numpy as np
 import seaborn as sns
+fplt.setup_mpl(misc_mpl_mods=False)
 
 st.title("Formula 1 Race Analysis Assistant")
 
@@ -18,7 +19,30 @@ selected_grand_prix = st.selectbox("Select Grand Prix", gp_name)
 session_name = ["FP1", "FP2", "FP3", "Q", "R", "SS", "S"]
 selected_session = st.selectbox("Select Session", session_name)
 session = ff1.get_session(selected_year, selected_grand_prix, selected_session)
+
+st.header("Position Changes During Race")
+session.load(telemetry=False, weather=False)
+fig, ax = plt.subplots(figsize=(8.0, 4.9))
+for drv in session.drivers:
+    drv_laps = session.laps.pick_driver(drv)
+
+    abb = drv_laps['Driver'].iloc[0]
+    color = ff1.plotting.driver_color(abb)
+
+    ax.plot(drv_laps['LapNumber'], drv_laps['Position'],
+            label=abb, color=color)
+ax.set_ylim([20.5, 0.5])
+ax.set_yticks([1, 5, 10, 15, 20])
+ax.set_xlabel('Lap')
+ax.set_ylabel('Position')
+ax.legend(bbox_to_anchor=(1.0, 1.02))
+plt.tight_layout()
+
+st.pyplot(fig)
+
+session = ff1.get_session(selected_year, selected_grand_prix, selected_session)
 session.load()
+fig, ax = plt.subplots(figsize=(8.0, 4.9))
 
 st.header("Fastest Laptime Comparison")
 
@@ -116,3 +140,76 @@ cbar.set_ticklabels(np.arange(1, 9))
 
 # Save the entire plot, including the color bar
 st.pyplot(plt.gcf())
+
+# Tyre Strategies during the race
+st.header("Tyre Strategy During the Race")
+laps = session.laps
+drivers = session.drivers
+drivers = [session.get_driver(driver)["Abbreviation"] for driver in drivers]
+stints = laps[["Driver", "Stint", "Compound", "LapNumber"]]
+stints = stints.groupby(["Driver", "Stint", "Compound"])
+stints = stints.count().reset_index()
+stints = stints.rename(columns={"LapNumber": "StintLength"})
+fig, ax = plt.subplots(figsize=(2.5, 5))
+
+for driver in drivers:
+    driver_stints = stints.loc[stints["Driver"] == driver]
+
+    previous_stint_end = 0
+    for idx, row in driver_stints.iterrows():
+        # each row contains the compound name and stint length
+        # we can use these information to draw horizontal bars
+        plt.barh(
+            y=driver,
+            width=row["StintLength"],
+            left=previous_stint_end,
+            color=fplt.COMPOUND_COLORS[row["Compound"]],
+            edgecolor="black",
+            fill=True
+        )
+
+        previous_stint_end += row["StintLength"]
+plt.title(session.event['EventName'])
+plt.xlabel("Lap Number")
+plt.grid(False)
+# invert the y-axis so drivers that finish higher are closer to the top
+ax.invert_yaxis()
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+ax.spines['left'].set_visible(False)
+
+plt.tight_layout()
+st.pyplot(fig)
+
+# team pace comparison
+st.header("Team Pace Comparison Analysis")
+# Function to load session data
+@st.cache_data
+def load_session(year, grand_prix, session_type):
+    session = ff1.get_session(year, grand_prix, session_type)
+    session.load()
+    return session
+session = load_session(selected_year, selected_grand_prix, selected_session)
+
+# Team pace comparison
+laps = session.laps.pick_quicklaps()
+
+# Convert timedelta to seconds for plotting
+laps['LapTime_seconds'] = laps['LapTime'].dt.total_seconds()
+
+fig, ax = plt.subplots(figsize=(15, 10))
+sns.boxplot(
+    data=laps,
+    x="Team",
+    y="LapTime_seconds",  # Updated column name for seconds
+    hue="Team",
+    order=laps["Team"].unique(),  # Use unique teams for order
+    palette="Set3",  # Example palette
+    linewidth=1.5,  # Increase linewidth for better visibility
+)
+
+plt.title(session.event['EventName'])
+plt.grid(visible=False)
+ax.set(xlabel=None)
+plt.tight_layout()
+st.pyplot(fig)
