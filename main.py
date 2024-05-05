@@ -76,6 +76,7 @@ if selected_driver1 and selected_driver2:
     ax.legend()
     st.pyplot(fig)
 
+# Tyre strategy visualisation
 st.header("Tyre Strategy Visualisation")
 
 selected_driver_tyre = st.text_input("Select Driver for Tyre Strategy")
@@ -91,55 +92,58 @@ if selected_driver_tyre:
     # Convert timedelta to seconds for plotting
     driver_laps['LapTime_seconds'] = pd.to_numeric(driver_laps['LapTime'].dt.total_seconds())
 
-    fig, ax = plt.subplots(figsize=(8, 8))
+    fig_tyre, ax_tyre = plt.subplots(figsize=(8, 8))
     sns.scatterplot(data=driver_laps,
                     x="LapNumber",
                     y="LapTime_seconds",
-                    ax=ax,
+                    ax=ax_tyre,
                     hue="Compound",
                     palette={'HARD': '#000000', 'INTERMEDIATE': '#43b02a', 'MEDIUM': '#ffd12e', 'SOFT': '#da291c', 'TEST-UNKNOWN': '#434649', 'UNKNOWN': '#00ffff', 'WET': '#0067ad'},
                     s=80,
                     linewidth=0,
                     legend='auto')
-    ax.set_ylabel('Lap Time (seconds)')
-    ax.set_title(f"Lap Times for {selected_driver_tyre} by Tyre Compound")
-    st.pyplot(fig)
+    ax_tyre.set_ylabel('Lap Time (seconds)')
+    ax_tyre.set_title(f"Lap Times for {selected_driver_tyre} by Tyre Compound")
+    st.pyplot(fig_tyre)
 
-# gearshift map
+# Gearshift Map
 st.header("Gearshift Map")
 selected_driver_map = st.text_input("Select Driver for Map Gearshift")
 
-lap = session.laps.pick_driver(selected_driver_map).pick_fastest()
-tel = lap.get_telemetry()
+if selected_driver_map:
+    lap_map = session.laps.pick_driver(selected_driver_map).pick_fastest()
+    tel_map = lap_map.get_telemetry()
 
-x = np.array(tel['X'].values)
-y = np.array(tel['Y'].values)
+    x_map = np.array(tel_map['X'].values)
+    y_map = np.array(tel_map['Y'].values)
 
-points = np.array([x, y]).T.reshape(-1, 1, 2)
-segments = np.concatenate([points[:-1], points[1:]], axis=1)
-gear = tel['nGear'].to_numpy().astype(float)
+    points_map = np.array([x_map, y_map]).T.reshape(-1, 1, 2)
+    segments_map = np.concatenate([points_map[:-1], points_map[1:]], axis=1)
+    gear_map = tel_map['nGear'].to_numpy().astype(float)
 
-cmap = plt.get_cmap('Paired')
-lc_comp = LineCollection(segments, norm=plt.Normalize(1, cmap.N+1), cmap=cmap)
-lc_comp.set_array(gear)
-lc_comp.set_linewidth(4)
+    cmap_map = plt.get_cmap('Paired')
+    lc_comp_map = LineCollection(segments_map, norm=plt.Normalize(1, cmap_map.N+1), cmap=cmap_map)
+    lc_comp_map.set_array(gear_map)
+    lc_comp_map.set_linewidth(4)
 
-plt.gca().add_collection(lc_comp)
-plt.axis('equal')
-plt.tick_params(labelleft=False, left=False, labelbottom=False, bottom=False)
+    fig_map, ax_map = plt.subplots()
+    ax_map.add_collection(lc_comp_map)
+    ax_map.axis('equal')
+    ax_map.tick_params(labelleft=False, left=False, labelbottom=False, bottom=False)
 
-title = plt.suptitle(
-    f"Fastest Lap Gear Shift Visualization\n"
-    f"{lap['Driver']} - {session.event['EventName']} {session.event.year}"
-)
+    title_map = ax_map.set_title(
+        f"Fastest Lap Gear Shift Visualization\n"
+        f"{selected_driver_map} - {session.event['EventName']} {session.event.year}"
+    )
 
-cbar = plt.colorbar(mappable=lc_comp, label="Gear",
-                    boundaries=np.arange(1, 10))
-cbar.set_ticks(np.arange(1.5, 9.5))
-cbar.set_ticklabels(np.arange(1, 9))
+    cbar_map = plt.colorbar(mappable=lc_comp_map, label="Gear",
+                            boundaries=np.arange(1, 10))
+    cbar_map.set_ticks(np.arange(1.5, 9.5))
+    cbar_map.set_ticklabels(np.arange(1, 9))
 
-# Save the entire plot, including the color bar
-st.pyplot(plt.gcf())
+    # Save the entire plot, including the color bar
+    st.pyplot(fig_map)
+
 
 # Tyre Strategies during the race
 st.header("Tyre Strategy During the Race")
