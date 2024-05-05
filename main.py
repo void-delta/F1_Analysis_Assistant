@@ -9,8 +9,15 @@ import seaborn as sns
 fplt.setup_mpl(misc_mpl_mods=False)
 
 st.title("Formula 1 Race Analysis Assistant")
+st.markdown('''*Welcome to the Formula 1 Race Analysis Assistant!*
 
-selected_year = st.selectbox("Select Year", list(range(2000, 2025)), index=len(list(range(2000, 2025))) - 1)
+This application provides an interactive platform for analyzing Formula 1 race data. Whether you're a seasoned F1 enthusiast or a newcomer eager to delve into the world of motorsports analytics, this tool offers insights into race positions, fastest lap comparisons, tyre strategies, gearshift maps, driver performance, team pace comparisons, and more.
+
+Select your preferred year, Grand Prix event, and session type to dive into the fascinating world of Formula 1 racing. Explore visualizations, compare driver performances, and uncover strategic insights to enhance your understanding of this exhilarating sport.
+
+Let's embark on a thrilling journey through the data-rich universe of Formula 1 racing together!''')
+
+selected_year = st.selectbox("Select Year", list(range(2018, 2025)), index=len(list(range(2018, 2025))) - 1)
 
 grands_prix = ff1.get_event_schedule(selected_year, include_testing=False, backend=None, force_ergast=False)
 gp_name = grands_prix.EventName 
@@ -20,7 +27,19 @@ session_name = ["FP1", "FP2", "FP3", "Q", "R", "SS", "S"]
 selected_session = st.selectbox("Select Session", session_name)
 session = ff1.get_session(selected_year, selected_grand_prix, selected_session)
 
+# Position Changes During Race
 st.header("Position Changes During Race")
+st.markdown('''
+The *"Position Changes During Race"* section visualizes how drivers' positions change over the course of the race. This visualization is useful for:
+
+- **Tracking Race Progress:** It provides a dynamic view of the race, showing which drivers gain or lose positions during each lap.
+
+- **Analyzing Overtaking Opportunities:** Changes in position can indicate where overtaking maneuvers occur, offering insights into drivers' performance and race strategies.
+
+- **Identifying Race Highlights:** Dramatic shifts in position can highlight key moments in the race, such as accidents, safety car periods, or strategic pit stops.
+
+''')
+
 session.load(telemetry=False, weather=False)
 fig, ax = plt.subplots(figsize=(8.0, 4.9))
 for drv in session.drivers:
@@ -40,11 +59,19 @@ plt.tight_layout()
 
 st.pyplot(fig)
 
+# Fastest Laptime Comparison
 session = ff1.get_session(selected_year, selected_grand_prix, selected_session)
 session.load()
 fig, ax = plt.subplots(figsize=(8.0, 4.9))
 
 st.header("Fastest Laptime Comparison")
+st.markdown('''The "Fastest Laptime Comparison" section allows you to compare the fastest laps of two selected drivers from a given session. This visualization is useful for:
+
+- **Performance Analysis:** It shows differences in speed and performance, highlighting where one driver might be quicker than the other.
+
+- **Driving Style Insights:** Comparing speed across time can reveal variations in driving style, indicating how aggressively or conservatively a driver handles certain sections of the track.
+
+- **Strategy Indications:** Differences in speed and consistency can point to strategic choices, such as tyre compound, fuel load, or car setup.''')
 
 selected_driver1 = st.text_input("Select Driver 1")
 selected_driver2 = st.text_input("Select Driver 2")
@@ -78,6 +105,15 @@ if selected_driver1 and selected_driver2:
 
 # Tyre strategy visualisation
 st.header("Tyre Strategy Visualisation")
+st.markdown('''
+The "Tyre Strategy Visualisation" section plots lap times against lap numbers for a selected driver, with points colored based on tyre compounds. This is useful for:
+
+- **Understanding Tyre Strategy:** It provides a visual representation of a driver's tyre choices throughout a session, showing the impact of different compounds on performance and lap times.
+
+- **Assessing Pit Stop Decisions:** By examining when and why tyre changes occur, you can infer pit stop strategies and their effects on race outcomes.
+
+- **Performance Trends:** This visualization can highlight trends in lap times, helping to identify whether a driver maintained pace, experienced tyre degradation, or improved performance after a tyre change.
+''')
 
 selected_driver_tyre = st.text_input("Select Driver for Tyre Strategy")
 
@@ -98,7 +134,7 @@ if selected_driver_tyre:
                     y="LapTime_seconds",
                     ax=ax_tyre,
                     hue="Compound",
-                    palette={'HARD': '#000000', 'INTERMEDIATE': '#43b02a', 'MEDIUM': '#ffd12e', 'SOFT': '#da291c', 'TEST-UNKNOWN': '#434649', 'UNKNOWN': '#00ffff', 'WET': '#0067ad'},
+                    palette={'HARD': '#ffffff', 'INTERMEDIATE': '#43b02a', 'MEDIUM': '#ffd12e', 'SOFT': '#da291c', 'TEST-UNKNOWN': '#434649', 'UNKNOWN': '#00ffff', 'WET': '#0067ad'},
                     s=80,
                     linewidth=0,
                     legend='auto')
@@ -108,6 +144,17 @@ if selected_driver_tyre:
 
 # Gearshift Map
 st.header("Gearshift Map")
+st.markdown('''
+The "Gearshift Map" section visualizes the fastest lap of a selected driver, with color-coded lines representing gear shifts. 
+
+This section is useful for:
+
+- **Track Analysis:** It provides a visual representation of the track, showing where gear shifts occur and how frequently they happen.
+
+- **Driving Style Assessment:** This visualization can reveal a driver's approach to corners and straight sections, offering insights into their driving style.
+
+- **Vehicle Performance:** By examining gear shifts, you can understand how drivers utilize their car's power and torque across different sections of the track.
+''')
 selected_driver_map = st.text_input("Select Driver for Map Gearshift")
 
 if selected_driver_map:
@@ -147,6 +194,8 @@ if selected_driver_map:
 
 # Tyre Strategies during the race
 st.header("Tyre Strategy During the Race")
+st.markdown('''**Tyre Race Strategy** in Formula 1 is about smart choices in tyre compounds, pit stops, and managing tyre wear to optimize performance and race outcomes. It's a critical factor in the dynamic world of motorsports.
+            ''')
 laps = session.laps
 drivers = session.drivers
 drivers = [session.get_driver(driver)["Abbreviation"] for driver in drivers]
@@ -188,6 +237,17 @@ st.pyplot(fig)
 
 # Driver Laptimes Scatter Plot
 st.header("Top 10 Driver Laptimes Scatter Plot")
+st.markdown('''
+The "Top 10 Driver Laptimes Scatter Plot" section compares the lap times of the top 10 finishers in a race. 
+
+This visualization is useful for:
+
+- **Performance Comparison:** It allows you to compare lap times across multiple drivers, highlighting differences in speed and consistency.
+
+- **Tyre Strategy Analysis:** Variations in lap times can indicate differences in tyre degradation and pit stop strategies among drivers.
+
+- **Race Recap:** By analyzing lap times, you can gain insights into the factors that influenced the outcome of the race, such as weather conditions, track evolution, and driver performance.
+''')
 fplt.setup_mpl(mpl_timedelta_support=False, misc_mpl_mods=False)
 race = ff1.get_session(selected_year, selected_grand_prix, selected_session)
 race.load()
@@ -234,35 +294,59 @@ st.pyplot(fig)
 
 # team pace comparison
 st.header("Team Pace Comparison Analysis")
+st.markdown('''The **Team Pace Comparison Analysis** section compares the lap times of different Formula 1 teams. This visualization is useful for:
+
+- Team Performance Assessment: It provides a comprehensive view of each team's pace throughout the race, highlighting strengths and weaknesses.
+- Strategy Evaluation: Variations in lap times can reveal differences in race strategies among teams, such as tyre management, fuel strategy, and pit stop timing.
+- Competitive Analysis: By comparing lap times across teams, you can assess the overall competitiveness of the field and identify potential areas for improvement.
+''')
 # Function to load session data
-@st.cache_data
-def load_session(year, grand_prix, session_type):
-    session = ff1.get_session(year, grand_prix, session_type)
-    session.load()
-    return session
-session = load_session(selected_year, selected_grand_prix, selected_session)
+session = ff1.get_session(selected_year, selected_grand_prix, selected_session)
+# Team pace comparison
+team_session = ff1.get_session(selected_year, selected_grand_prix, selected_session)  # Rename session to team_session
+team_session.load()  # Load team session data
 
 # Team pace comparison
-laps = session.laps.pick_quicklaps()
+team_laps = team_session.laps.pick_quicklaps()  # Pick quicklaps for team comparison
 
 # Convert timedelta to seconds for plotting
-laps['LapTime_seconds'] = laps['LapTime'].dt.total_seconds()
+team_laps['LapTime_seconds'] = team_laps['LapTime'].dt.total_seconds()
 
-fig, ax = plt.subplots(figsize=(15, 10))
+fig_team, ax_team = plt.subplots(figsize=(15, 10))
 sns.boxplot(
-    data=laps,
+    data=team_laps,
     x="Team",
     y="LapTime_seconds",  # Updated column name for seconds
     hue="Team",
-    order=laps["Team"].unique(),  # Use unique teams for order
+    order=team_laps["Team"].unique(),  # Use unique teams for order
     palette="Set3",  # Example palette
     linewidth=1.5,  # Increase linewidth for better visibility
 )
 
-plt.title(session.event['EventName'])
+plt.title(team_session.event['EventName'])  # Use team_session for event name
 plt.grid(visible=False)
-ax.set(xlabel=None)
+ax_team.set(xlabel=None)
 plt.tight_layout()
-st.pyplot(fig)
+st.pyplot(fig_team)
 
 plt.close("all")
+
+st.markdown("""---
+The Formula 1 Race Analysis Assistant provides a powerful platform for exploring and analyzing Formula 1 race data. From tracking race progress to comparing lap times and understanding strategic decisions, this application offers a comprehensive toolkit for both seasoned enthusiasts and newcomers to dive deep into the world of motorsports analytics.
+
+By leveraging interactive visualizations, performance comparisons, and strategic insights, users can gain a deeper understanding of Formula 1 races, drivers' performances, and team strategies. Whether you're interested in position changes, fastest lap comparisons, tyre strategies, or team pace analysis, this application caters to a wide range of analytical needs.
+
+With its intuitive interface and rich data visualization capabilities, the Formula 1 Race Analysis Assistant empowers users to uncover valuable insights, enhance their race analysis skills, and enjoy a more immersive experience in the thrilling universe of Formula 1 racing.
+""")
+
+
+st.markdown('''
+---
+*Project created for course Software Engineering CS301*
+
+*Undertaken by:*
+*   Digant Singh
+*   Eati Nikhilesh
+*   Emani Srikar
+*   Shri Harsha
+''')
