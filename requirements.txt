@@ -2,3 +2,5 @@ streamlit
 matplotlib
 numpy
 fastf1==3.3.2
+seaborn
+pandas
