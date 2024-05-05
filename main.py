@@ -150,7 +150,7 @@ stints = laps[["Driver", "Stint", "Compound", "LapNumber"]]
 stints = stints.groupby(["Driver", "Stint", "Compound"])
 stints = stints.count().reset_index()
 stints = stints.rename(columns={"LapNumber": "StintLength"})
-fig, ax = plt.subplots(figsize=(2.5, 5))
+fig, ax = plt.subplots(figsize=(3, 4))
 
 for driver in drivers:
     driver_stints = stints.loc[stints["Driver"] == driver]
@@ -177,6 +177,53 @@ ax.invert_yaxis()
 ax.spines['top'].set_visible(False)
 ax.spines['right'].set_visible(False)
 ax.spines['left'].set_visible(False)
+
+plt.tight_layout()
+st.pyplot(fig)
+
+
+# Driver Laptimes Scatter Plot
+st.header("Top 10 Driver Laptimes Scatter Plot")
+fplt.setup_mpl(mpl_timedelta_support=False, misc_mpl_mods=False)
+race = ff1.get_session(selected_year, selected_grand_prix, selected_session)
+race.load()
+point_finishers = race.drivers[:10]
+print(point_finishers)
+driver_laps = race.laps.pick_drivers(point_finishers).pick_quicklaps()
+driver_laps = driver_laps.reset_index()
+finishing_order = [race.get_driver(i)["Abbreviation"] for i in point_finishers]
+driver_colors = {abv: fplt.DRIVER_COLORS[driver] for abv,
+                 driver in fplt.DRIVER_TRANSLATE.items()}
+fig, ax = plt.subplots(figsize=(15, 10))
+
+# Seaborn doesn't have proper timedelta support
+# so we have to convert timedelta to float (in seconds)
+driver_laps["LapTime(s)"] = driver_laps["LapTime"].dt.total_seconds()
+
+sns.violinplot(data=driver_laps,
+               x="Driver",
+               y="LapTime(s)",
+               hue="Driver",
+               inner=None,
+               density_norm="area",
+               order=finishing_order,
+               palette=driver_colors
+               )
+
+sns.swarmplot(data=driver_laps,
+              x="Driver",
+              y="LapTime(s)",
+              order=finishing_order,
+              hue="Compound",
+              palette=fplt.COMPOUND_COLORS,
+              hue_order=["SOFT", "MEDIUM", "HARD"],
+              linewidth=0,
+              size=4,
+              )
+ax.set_xlabel("Driver")
+ax.set_ylabel("Lap Time (s)")
+plt.suptitle(session.event['EventName'])
+sns.despine(left=True, bottom=True)
 
 plt.tight_layout()
 st.pyplot(fig)
