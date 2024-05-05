@@ -264,3 +264,5 @@ plt.grid(visible=False)
 ax.set(xlabel=None)
 plt.tight_layout()
 st.pyplot(fig)
+
+plt.close("all")
