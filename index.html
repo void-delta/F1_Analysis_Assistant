@@ -12,7 +12,8 @@
         }
 
         h1, h2, h3, h4, h5, h6 {
-            color: #ff6f61; /* Highlighted color for headings */
+            color: #ff4200; /* Highlighted color for headings */
+            font-size: xx-large;
         }
 
         code {
@@ -45,49 +46,78 @@
             font-size: 0.9em;
             color: #999999; /* Light grey for footer text */
         }
+
+        p {
+            font-size: large;
+        }
+
+        li {
+            font-size: large;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Formula 1 Race Analysis Assistant</h1>
-        <p>Welcome to the documentation for the Formula 1 Race Analysis Assistant! This application provides an interactive platform for analyzing Formula 1 race data using the FastF1 API. With this tool, users can visualize and analyze various aspects of Formula 1 races, from position changes to team pace comparisons.</p>
+        
+        <h2>User's Guide</h2>
+        <p>
+            Welcome to the Formula 1 Race Analysis Assistant! This guide will help you understand how to use the application and what you can learn from it.
+        </p>
+        
+        <h3>Selecting Sessions</h3>
+        <p>
+            The application allows you to select different sessions to analyze. Here's what each session represents:
+        </p>
+        <ul>
+            <li><strong>FP1, FP2, FP3</strong>: Free Practice sessions. These sessions are used by teams to test their cars and gather data. They often involve trying different setups and strategies.</li>
+            <li><strong>Q</strong>: Qualifying session. This determines the starting grid for the race, with drivers aiming to set their fastest lap times.</li>
+            <li><strong>R</strong>: The race itself. This is the main event where drivers compete for points and podium positions.</li>
+            <li><strong>SS</strong>: Sprint Shootout or Sprint Session. This session is shorter than the main race, offering a different format and awarding points to the top finishers. It provides additional action and strategic variety to the race weekend.</li>
+            <li><strong>S</strong>: Support Race session. These are races held alongside Formula 1 events, featuring other racing series or support categories, providing additional entertainment and variety during race weekends.</li>
+        </ul>
+        
+        <h3>Selecting Drivers</h3>
+        <p>
+            You can select specific drivers to analyze their performance. Enter the driver's name or abbreviation (like "HAM" for Lewis Hamilton) in the input fields to choose them for analysis. Double-check the spelling to ensure accurate results.
+        </p>
 
         <h2>Features</h2>
         <p>The application provides the following features for comprehensive Formula 1 analysis:</p>
 
         <h3>Position Changes During the Race</h3>
         <p>
-            This feature visualizes how drivers' positions change during the course of a race. It plots the position of each driver lap-by-lap, allowing users to track the progression of the race and identify critical moments, like overtaking, safety car periods, or pit stops. This feature is useful for understanding race dynamics and key race events.
+            This feature visualizes how drivers' positions change during the course of a race. It plots the position of each driver lap-by-lap, allowing users to track the race's progression and identify critical moments, such as overtaking, safety car periods, or pit stops. This is useful for understanding race dynamics and determining key events that influenced the race outcome.
         </p>
 
         <h3>Fastest Laptime Comparison</h3>
         <p>
-            Compares the fastest lap times of two selected drivers from a given session. It plots the speed of each driver over time, allowing users to see where one driver might be faster than another. This feature helps analyze performance differences, driving styles, and strategic choices.
+            This feature compares the fastest lap times of two selected drivers from a given session. It plots the speed of each driver over time, allowing users to see where one driver might be faster than another. It helps analyze performance differences, driving styles, and strategic choices, providing insights into driver capabilities and car performance. Users can identify areas where each driver excels and where they may lose time compared to their competitors.
         </p>
 
         <h3>Tyre Strategy Visualization</h3>
         <p>
-            This feature provides insights into a driver's tyre strategy during a session. It plots lap times against lap numbers, with points colored based on tyre compounds. This helps to understand tyre choices, pit stop strategies, and the impact of different compounds on performance. 
+            This feature provides insights into a driver's tyre strategy during a session. It plots lap times against lap numbers, with points colored based on tyre compounds. This helps to understand tyre choices, pit stop strategies, and the impact of different compounds on performance. By visualizing tyre usage throughout the session, users can analyze the effectiveness of different strategies and their influence on overall performance.
         </p>
 
         <h3>Gearshift Map</h3>
         <p>
-            Visualizes the fastest lap of a selected driver with color-coded lines representing gear shifts. This feature maps the track layout and shows where and how frequently gear shifts occur during the fastest lap. It's useful for analyzing driving styles and assessing a driver's approach to different track sections.
+            This feature visualizes the fastest lap of a selected driver with color-coded lines representing gear shifts. It shows where and how frequently gear shifts occur during the fastest lap. This visualization can help analyze driving styles and determine how drivers approach different track sections, allowing for a deeper understanding of driver technique and car behavior. Users can identify sections where higher gears are used, indicating high speed, and where frequent shifts occur, suggesting complex or technical corners.
         </p>
 
         <h3>Tyre Strategy During the Race</h3>
         <p>
-            This feature visualizes the tyre strategies of all drivers during a race. It shows which compounds each driver uses, along with the stint lengths. This can provide insights into overall race strategies, pit stop timing, and tyre management.
+            This feature visualizes the tyre strategies of all drivers during a race. It shows which compounds each driver uses and their stint lengths. This can provide insights into overall race strategies, pit stop timing, and tyre management. By analyzing tyre strategies during the race, users can understand how teams adapt to changing track conditions and respond to other teams' strategies.
         </p>
 
         <h3>Top 10 Driver Laptimes Scatter Plot</h3>
         <p>
-            Compares lap times of the top 10 finishers in a race. This feature displays a scatter plot of lap times, allowing users to compare performance among the top finishers. It can indicate consistency, tyre degradation, and strategic variations.
+            This feature compares lap times of the top 10 finishers in a race. It displays a scatter plot of lap times, allowing users to compare performance among the top finishers. This can indicate consistency, tyre degradation, and strategic variations. The scatter plot helps identify outliers and analyze the performance patterns of the leading drivers, providing insights into their consistency and approach to racing.
         </p>
 
         <h3>Team Pace Comparison Analysis</h3>
         <p>
-            This feature compares the lap times of different teams during a race. It uses a box plot to show lap time distributions for each team, offering insights into team performance and strategy during the race.
+            This feature compares lap times of different teams during a race. It uses a box plot to show lap time distributions for each team, offering insights into team performance and strategy during the race. By comparing team lap times, users can assess the competitive landscape and understand which teams are consistent and which may experience variations in pace due to strategy or technical issues.
         </p>
 
         <h2>Project Team</h2>
