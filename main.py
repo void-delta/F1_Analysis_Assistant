@@ -9,6 +9,19 @@ import seaborn as sns
 fplt.setup_mpl(misc_mpl_mods=False)
 
 st.title("Formula 1 Race Analysis Assistant")
+link_style = """
+    text-decoration: none;
+    padding: 8px 12px;
+    background-color: #007bff;
+    color: #ffffff;
+    border-radius: 5px;
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 10px;
+"""
+
+# Display the link button styled as a traditional app button
+st.markdown('<a href="https://void-delta.github.io/F1_Analysis_Assistant/" style="{}">Documentation</a>'.format(link_style), unsafe_allow_html=True)
 st.markdown('''*Welcome to the Formula 1 Race Analysis Assistant!*
 
 This application provides an interactive platform for analyzing Formula 1 race data. Whether you're a seasoned F1 enthusiast or a newcomer eager to delve into the world of motorsports analytics, this tool offers insights into race positions, fastest lap comparisons, tyre strategies, gearshift maps, driver performance, team pace comparisons, and more.
